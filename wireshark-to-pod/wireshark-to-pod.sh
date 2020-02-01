@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Show POD's traffic in Wireshark
+# Show Pod's traffic in Wireshark
 # (needs ssh sudo access)
 #
 # Author: Victor Yagofarov
