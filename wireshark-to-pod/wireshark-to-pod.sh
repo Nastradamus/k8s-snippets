@@ -24,7 +24,7 @@ fi
 NODE=$(kubectl get po -n ${NAMESPACE} -o wide ${POD} | awk '{print $7}' | grep -v NODE)
 
 if [[ -z "$NODE" ]]; then
-  echo "POD not found"
+  echo "Pod not found"
   exit 3
 fi
 
