@@ -1,4 +1,4 @@
-### Connect to pod with Wireshark
+### Connect to Pod with Wireshark
 
 ### Example
 
