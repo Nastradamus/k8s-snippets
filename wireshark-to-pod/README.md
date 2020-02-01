@@ -12,3 +12,4 @@ list-ingress-85b4b876dd-gtfpp             1/1     Running   0          26d
 ```
 
 
+![Screenshot](https://github.com/Nastradamus/k8s-snippets/raw/master/wireshark-to-pod/wireshark.png)
