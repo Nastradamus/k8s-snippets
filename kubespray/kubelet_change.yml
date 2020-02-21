@@ -1,0 +1,39 @@
+---
+# Change only kubelet's settings
+# Example of usage:
+# ansible-playbook -C -v --diff -i inventory/dev_hosts_try_one -b kubelet_change.yml -e "@dev_vars.yaml" -u deployment --private-key=~/deployment_id_rsa --tags=facts,kubelet --skip-tags=k8s-secrets,upgrade
+- hosts: localhost
+  gather_facts: False
+  become: no
+  tasks:
+    - name: "Check ansible version !=2.7.0"
+      assert:
+        msg: "Ansible V2.7.0 can't be used until: https://github.com/ansible/ansible/issues/46600 is fixed"
+        that:
+          - ansible_version.string is version("2.7.0", "!=")
+          - ansible_version.string is version("2.6.0", ">=")
+      tags:
+        - check
+  vars:
+    ansible_connection: local
+
+- hosts: localhost
+  tasks:
+    - name: deploy warning for non kubeadm
+      debug:
+        msg: "DEPRECATION: non-kubeadm deployment is deprecated from v2.9. Will be removed in next release."
+      when: not kubeadm_enabled and not skip_non_kubeadm_warning
+
+    - name: deploy cluster for non kubeadm
+      pause:
+        prompt: "Are you sure you want to deploy cluster using the deprecated non-kubeadm mode."
+        echo: no
+      when: not kubeadm_enabled and not skip_non_kubeadm_warning
+
+- name: Target workers and masters
+  hosts: k8s-cluster # workers and masters
+  any_errors_fatal: "{{ any_errors_fatal | default(true) }}"
+  roles:
+    - { role: kubespray-defaults}
+    - { role: etcd, tags: etcd, etcd_cluster_setup: false }
+    - { role: kubernetes/node, tags: node }
